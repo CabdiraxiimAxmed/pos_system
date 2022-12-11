@@ -10,6 +10,22 @@ router.get("/", async(req, res) => {
     let decryptdPassword = bytes.toString(CryptoJS.enc.Utf8);
     user.password = decryptdPassword;
   }
+  if (resp.rows.length === 0) {
+    let result = [{
+      "id": 0,
+      "name": "",
+      "role": "",
+      "password": "",
+      "created_date": "",
+      "username": "",
+      "permissions": [
+        ""
+      ],
+      "contact": ""
+    }];
+    res.send(result);
+    return;
+  }
   res.send(resp.rows);
 });
 
@@ -25,6 +41,22 @@ router.get('/:username', async(req, res) => {
     let bytes  = CryptoJS.AES.decrypt(user.password, 'ahmed');
     let decryptdPassword = bytes.toString(CryptoJS.enc.Utf8);
     user.password = decryptdPassword;
+    if (resp.rows.length === 0) {
+      let result = [{
+        "id": 0,
+        "name": "",
+        "role": "",
+        "password": "",
+        "created_date": "",
+        "username": "",
+        "permissions": [
+          ""
+        ],
+        "contact": ""
+      }];
+      res.send(result);
+      return;
+    }
     res.send(user);
   }catch(err) {
     res.send('err');

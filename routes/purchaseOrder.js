@@ -7,6 +7,24 @@ router.get('/', async(req, res) => {
   try {
     const resp = await client.query('SELECT * FROM purchase_order');
     let test = resp.rows;
+    if (resp.rows.length === 0) {
+      let result = [
+        {
+          "order_id": "",
+          "order_date": "",
+          "delivery_date": "",
+          "supplier": "",
+          "purchase_status": "",
+          "items": [{item: '', quantity: 0, price: 0, amount: 0}],
+          "discount": "",
+          "taxamount": "",
+          "total": "",
+          "paid": ""
+        }
+      ];
+      res.send(result);
+      return;
+    }
     res.send(resp.rows);
   }catch(err) {
     res.send('err');
@@ -43,6 +61,24 @@ router.get('/orders/:order_id', async(req, res) => {
   const { order_id } = req.params;
   try {
     const resp = await client.query(`SELECT * FROM purchase_order WHERE order_id = '${order_id}'`);
+    if (resp.rows.length === 0) {
+      let result = [
+        {
+          "order_id": "",
+          "order_date": "",
+          "delivery_date": "",
+          "supplier": "",
+          "purchase_status": "",
+          "items": [{item: '', quantity: 0, price: 0, amount: 0}],
+          "discount": "",
+          "taxamount": "",
+          "total": "",
+          "paid": ""
+        }
+      ];
+      res.send(result);
+      return;
+    }
     res.send(resp.rows);
   } catch(err) {
     res.send('err');
@@ -79,6 +115,9 @@ router.post('/expense', async(req, res) => {
       const resp = await client.query(`SELECT order_id, paid, total, order_date FROM purchase_order WHERE order_date::text LIKE '%${date}%'`);
       if(resp.rows.length === 0) continue;
       result.push(...resp.rows);
+    }
+    if(result.length == 0) {
+      result = [{order_id: '', paid: "", total: '', order_date: ''}];
     }
     res.send(result);
   } catch(err) {
@@ -205,6 +244,27 @@ router.post('/get-debt-transaction', async(req, res) => {
   const { order_id } = req.body;
   try {
     const resp = await client.query(`SELECT * FROM purch_debt WHERE order_id='${order_id}'`);
+    if (resp.rows.length === 0) {
+        let result = [
+          {
+            "id": 0,
+            "amount": "",
+            "order_id": "",
+            "payments": [
+              {
+                "recordedDate": "",
+                "paidAmount": 0
+              }
+            ],
+            "is_paid": false,
+            "recordeddate": "",
+            "supplier": "",
+            "initialamount": ""
+          }
+        ];
+      res.send(result);
+      return;
+    }
     res.send(resp.rows);
   } catch(err) {
     console.log(err);
@@ -216,6 +276,27 @@ router.post('/get-debt-supplier', async(req, res) => {
   const { supplier } = req.body;
   try {
     const resp = await client.query(`SELECT * FROM purch_debt WHERE supplier='${supplier}'`);
+    if (resp.rows.length === 0) {
+      let result = [
+        {
+          "id": 0,
+          "amount": "",
+          "order_id": "",
+          "payments": [
+            {
+              "recordedDate": "",
+              "paidAmount": 0
+            }
+          ],
+          "is_paid": false,
+          "recordeddate": "",
+          "supplier": "",
+          "initialamount": ""
+        }
+      ];
+      res.send(result);
+      return;
+    }
     res.send(resp.rows);
   } catch(err) {
     console.log(err);

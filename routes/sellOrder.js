@@ -6,6 +6,24 @@ const router = express.Router();
 router.get('/', async(req, res) => {
   try {
     let resp = await client.query('SELECT * FROM sell_order');
+    if (resp.rows.length === 0) {
+      let result = [
+        {
+          "order_id": "",
+          "customer": "",
+          "sold_by": "",
+          "is_debt": false,
+          "items": [[{"item": "", "quantity": 0, "price": 0, "amount": 0}]],
+          "discount": "",
+          "total": "",
+          "paid": "",
+          "created_date": "",
+          "payment_method": null
+        },
+      ];
+      res.send(result);
+      return;
+    }
     res.send(resp.rows);
   } catch(err) {
     res.send('error');
@@ -16,6 +34,24 @@ router.get('/sell/:order_id', async(req, res) => {
   const { order_id } = req.params;
   try {
     let resp = await client.query(`SELECT * FROM sell_order WHERE order_id='${order_id}'`);
+    if (resp.rows.length === 0) {
+      let result = [
+        {
+          "order_id": "",
+          "customer": "",
+          "sold_by": "",
+          "is_debt": false,
+          "items": [[{"item": "", "quantity": 0, "price": 0, "amount": 0}]],
+          "discount": "",
+          "total": "",
+          "paid": "",
+          "created_date": "",
+          "payment_method": null
+        },
+      ];
+      res.send(result);
+      return;
+    }
     res.send(resp.rows);
   } catch(err) {
     res.send('error');

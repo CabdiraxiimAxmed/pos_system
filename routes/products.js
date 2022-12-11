@@ -5,9 +5,13 @@ const router = express.Router();
 router.get('/', async(req, res) => {
   try {
     const resp = await client.query('SELECT * FROM products');
+    if (resp.rows.length === 0) {
+      let result = [{id: 0, name: '', supplier: '', quantity: '', alertquantity: '', barcode: '', price: ''}];
+      res.send(result);
+      return;
+    }
     res.send(resp.rows);
   } catch(err) {
-    console.log(err);
     res.send('err');
   }
 });

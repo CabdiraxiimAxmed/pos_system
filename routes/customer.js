@@ -5,6 +5,11 @@ const router = express.Router();
 router.get('/', async(req, res) => {
   try {
     const resp = await client.query('SELECT * FROM customer');
+    if(resp.rows.length == 0) {
+      let result = [{id: 0, name: '', contact: '', address: '', email: '', city: '', created_date: ''}];
+      res.send(result);
+      return;
+    }
     res.send(resp.rows);
   } catch(err) {
     res.send('error');
@@ -29,8 +34,8 @@ router.post('/name', async(req, res) => {
           "city": "",
           "created_date": ""
         }
-      ]
-      res.send(result)
+      ];
+      res.send(result);
       return;
     }
     res.send(resp.rows[0]);
@@ -56,7 +61,6 @@ router.get('/customer-name', async(req, res) => {
     }
     res.send(result);
   } catch(err) {
-    console.log(err);
     res.send('err');
   }
 });
@@ -128,7 +132,6 @@ router.post('/debt', async(req, res) => {
 
 router.post('/sells', async(req, res) => {
   const { name } = req.body;
-  console.log({ name })
   try {
     const resp = await client.query(`SELECT order_id, customer, is_debt, total, paid FROM sell_order WHERE customer='${name}'`);
     if (resp.rows.length == 0) {
